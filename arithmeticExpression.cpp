@@ -12,10 +12,14 @@ arithmeticExpression::arithmeticExpression(const string& _infix)
 }
 
 //optional destructor maybe later
+//arithmeticExpression::~arithmeticExpression()
+//{ //maybe later}
+
 void arithmeticExpression::buildTree()
 {
 
 }
+
 void arithmeticExpression::infix() {
     if (root != nullptr)
     {
@@ -98,7 +102,6 @@ void arithmeticExpression::infix(TreeNode* _root) {
     {
         cout << "(";
         infix(_root->left);
-         
     }
     else
     {
@@ -119,12 +122,42 @@ void arithmeticExpression::infix(TreeNode* _root) {
     return;
 }
 //[Root, Left, Right]
-void arithmeticExpression::prefix(TreeNode*) {
+void arithmeticExpression::prefix(TreeNode* _root) {
+    //Prints Root
+    cout << _root->data;
 
+    //Moves Left
+    if (_root->left != nullptr)
+    {
+        infix(_root->left);
+    }
+
+    //Moves Right
+    if (_root->right != nullptr)
+    {
+        infix(_root->right);
+    }
+
+    return;
 }
 //[Left, Right, Root]
-void arithmeticExpression::postfix(TreeNode*) {
+void arithmeticExpression::postfix(TreeNode* _root) {
+    //Moves Left
+    if (_root->left != nullptr)
+    {
+        infix(_root->left);
+    }
 
+    //Moves Right
+    if (_root->right != nullptr)
+    {
+        infix(_root->right);
+    }
+
+    //Prints Root
+    cout << _root->data;
+
+    return;
 }
 
 void arithmeticExpression::visualizeTree(const string& outputFilename) {
