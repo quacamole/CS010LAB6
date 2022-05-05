@@ -17,6 +17,13 @@ arithmeticExpression::arithmeticExpression(const string& _infix)
 //optional destructor maybe later
 void arithmeticExpression::buildTree()
 {
+    string postfix = this->infix_to_postfix();
+    stack<TreeNode*> t;
+    //pushes each treeNode from postfix onto stack, using pop
+    //to remove nodes from the top as they are made into leaf nodes - kera
+    //keys need to be chars (a, b, c etc)
+    char key = 'a';
+    char data = 'a';
 
 }
 void arithmeticExpression::infix(){
