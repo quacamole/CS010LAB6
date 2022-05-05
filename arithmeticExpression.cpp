@@ -142,7 +142,52 @@ void arithmeticExpression::visualizeTree(const string& outputFilename) {
     system(command.c_str());
 }
 
-//helper for visualizeTree(string)
-//void arithmeticExpression::visualizeTree(ofstream&, TreeNode*){
-//
-//}
+//helper for visualizeTree(string); recursive [preorder looks best]; examples below
+
+/*
+digraph G1 {
+  // nodes and edges    
+key12->key8;
+key12->key16;
+key8->key1;
+key8->key11;
+key16->key13;
+key16->key25;
+}
+*/
+//expected from first test
+/*
+digraph G {
+"+" -> "a";
+"+" -> "*";
+"*" -> "b";
+"*" -> "c";
+}
+*/
+
+void arithmeticExpression::visualizeTree(ofstream& outFS, TreeNode* _root){
+    //Prints Root
+    outFS << "\"" << _root->data << "\";" << endl;
+    if (_root->left != nullptr)
+    {
+        outFS << "\"" << _root->data << "\" -> \"" << _root->left->data << "\";" << endl;
+    }
+    if (_root->right != nullptr)
+    {
+        outFS << "\"" << _root->data << "\" -> \"" << _root->right->data << "\";" << endl;
+    }
+
+    //Prints Left
+    if (_root->left != nullptr)
+    {
+        visualizeTree(outFS, _root->left);
+    }
+
+    //Prints Right
+    if (_root->right != nullptr)
+    {
+        visualizeTree(outFS, _root->right);
+    }
+
+    return;
+}
