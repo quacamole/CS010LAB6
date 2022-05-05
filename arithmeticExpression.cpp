@@ -2,6 +2,7 @@
 #include<iostream>
 #include <fstream>
 #include<sstream>
+#include <vector>
 using namespace std;
 
 //added constructor -Kera
@@ -17,7 +18,63 @@ arithmeticExpression::arithmeticExpression(const string& _infix)
 
 void arithmeticExpression::buildTree()
 {
+    string _postfix = infix_to_postfix();
 
+    vector<TreeNode*> nodePointers;
+    int size = 0;
+    int xCount = 0, dCount = 0, pCount = 0, sCount = 0;
+    
+    for (int i = 0; i < _postfix.length(); i++)
+    {
+        char key = priority(_postfix.at(i)) + '0';
+
+        //gives operators unique keys for graph, conjoined otherwise w/ multiple ops, only visual
+        if (_postfix.at(i) == '+' || _postfix.at(i) == '-' || _postfix.at(i) == '*' || _postfix.at(i) == '/')
+        {
+            if (_postfix.at(i) == '+')
+            {
+                key = pCount + '0';
+                pCount++;
+            }
+            else if (_postfix.at(i) == '-')
+            {
+                key = sCount + '0';
+                sCount++;
+            }
+            else if (_postfix.at(i) == '*')
+            {
+                key = xCount + '0';
+                xCount++;
+            }
+            else
+            {
+                key = dCount + '0';
+                dCount++;
+            }
+        }
+
+        nodePointers.push_back(new TreeNode(_postfix.at(i), key));
+        size++;
+    }
+
+    for (int i = 0; i < size; i++)
+    {
+        if (nodePointers.at(i)->data == '+' || nodePointers.at(i)->data == '-' || nodePointers.at(i)->data == '*' || nodePointers.at(i)->data == '/')
+        {
+            nodePointers.at(i)->right = nodePointers.at(i - 1);
+            nodePointers.at(i)->left = nodePointers.at(i - 2); 
+            
+            for (int j = i; j < size; j++)
+            {
+                nodePointers.at(j - 2) = nodePointers.at(j);
+            }
+
+            i -= 2;
+            size -= 2;
+        }
+    }
+
+    root = nodePointers.at(0);
 }
 
 void arithmeticExpression::infix() {
@@ -129,13 +186,13 @@ void arithmeticExpression::prefix(TreeNode* _root) {
     //Moves Left
     if (_root->left != nullptr)
     {
-        infix(_root->left);
+        prefix(_root->left);
     }
 
     //Moves Right
     if (_root->right != nullptr)
     {
-        infix(_root->right);
+        prefix(_root->right);
     }
 
     return;
@@ -145,13 +202,13 @@ void arithmeticExpression::postfix(TreeNode* _root) {
     //Moves Left
     if (_root->left != nullptr)
     {
-        infix(_root->left);
+        postfix(_root->left);
     }
 
     //Moves Right
     if (_root->right != nullptr)
     {
-        infix(_root->right);
+        postfix(_root->right);
     }
 
     //Prints Root
@@ -200,14 +257,15 @@ digraph G {
 
 void arithmeticExpression::visualizeTree(ofstream& outFS, TreeNode* _root){
     //Prints Root
-    outFS << "\"" << _root->data << "\";" << endl;
+    outFS << "\"" << _root->data << _root->key << "\";" << endl;
+
     if (_root->left != nullptr)
     {
-        outFS << "\"" << _root->data << "\" -> \"" << _root->left->data << "\";" << endl;
+        outFS << "\"" << _root->data << _root->key << "\" -> \"" << _root->left->data << _root->left->key << "\";" << endl;
     }
     if (_root->right != nullptr)
     {
-        outFS << "\"" << _root->data << "\" -> \"" << _root->right->data << "\";" << endl;
+        outFS << "\"" << _root->data << _root->key << "\" -> \"" << _root->right->data << _root->right->key << "\";" << endl;
     }
 
     //Prints Left
